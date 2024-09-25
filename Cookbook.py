@@ -36,3 +36,6 @@ def curl_uat(recipe):
 
 def curl_prod(recipe):
     return "curl localhost:30083"
+
+def get_freight(recipe):
+    return "kargo get freight --project kargo-demo"
