@@ -15,11 +15,3 @@ spec:
       containers:
       - name: minirepo
         image: docker.io/okrehel/minirepo
-        volumeMounts:
-        - name: content
-          mountPath: /usr/share/nginx/html
-          readOnly: true
-      volumes:
-      - name: content
-        configMap:
-          name: kargo-demo-content
