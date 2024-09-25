@@ -23,4 +23,9 @@ def setup(recipe):
         "cd ops",
         "./setup-kind-cluster.sh",
         kubectl("apply -f argocd-kargo-demo.yaml"),
+        kubectl("-n kargo-demo-test create secret generic regcred  --from-file=.dockerconfigjson=$HOME/.docker/config.json --type=kubernetes.io/dockerconfigjson")
     ]
+
+
+def curl_test(recipe):
+    return "curl localhost:30081"
