@@ -29,3 +29,10 @@ def setup(recipe):
 
 def curl_test(recipe):
     return "curl localhost:30081"
+
+
+def curl_uat(recipe):
+    return "curl localhost:30082"
+
+def curl_prod(recipe):
+    return "curl localhost:30083"
