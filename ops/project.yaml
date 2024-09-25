@@ -1,0 +1,116 @@
+apiVersion: kargo.akuity.io/v1alpha1
+kind: Project
+metadata:
+  name: kargo-demo
+---
+apiVersion: v1
+kind: Secret
+type: Opaque
+metadata:
+  name: kargo-demo-repo
+  namespace: kargo-demo
+  labels:
+    kargo.akuity.io/cred-type: git
+stringData:
+  repoURL: ${GITOPS_REPO_URL}
+  username: ${GITHUB_USERNAME}
+  password: ${GITHUB_PAT}
+---
+apiVersion: v1
+kind: Secret
+type: Opaque
+metadata:
+  name: image-registry
+  namespace: kargo-demo
+  labels:
+    kargo.akuity.io/cred-type: image
+stringData:
+  repoURL: docker.io/okrehel/minirepo
+  username: ${DOCKER_USERNAME}
+  password: ${DOCKER_PASSWORD}
+---
+apiVersion: kargo.akuity.io/v1alpha1
+kind: Warehouse
+metadata:
+  name: kargo-demo
+  namespace: kargo-demo
+spec:
+  subscriptions:
+  - image:
+      repoURL: docker.io/okrehel/minirepo
+      updateStrategy: Latest
+      discoveryLimit: 5
+---
+apiVersion: kargo.akuity.io/v1alpha1
+kind: Stage
+metadata:
+  name: test
+  namespace: kargo-demo
+spec:
+  requestedFreight:
+  - origin:
+      kind: Warehouse
+      name: kargo-demo
+    sources:
+      direct: true
+  promotionMechanisms:
+    gitRepoUpdates:
+    - repoURL: ${GITOPS_REPO_URL}
+      writeBranch: stage/test
+      kustomize:
+        images:
+        - image: docker.io/okrehel/minirepo
+          path: stages/test
+    argoCDAppUpdates:
+    - appName: kargo-demo-test
+      appNamespace: argocd
+---
+apiVersion: kargo.akuity.io/v1alpha1
+kind: Stage
+metadata:
+  name: uat
+  namespace: kargo-demo
+spec:
+  requestedFreight:
+  - origin:
+      kind: Warehouse
+      name: kargo-demo
+    sources:
+      stages:
+      - test
+  promotionMechanisms:
+    gitRepoUpdates:
+    - repoURL: ${GITOPS_REPO_URL}
+      writeBranch: stage/uat
+      kustomize:
+        images:
+        - image: docker.io/okrehel/minirepo
+          path: stages/uat
+    argoCDAppUpdates:
+    - appName: kargo-demo-uat
+      appNamespace: argocd
+---
+apiVersion: kargo.akuity.io/v1alpha1
+kind: Stage
+metadata:
+  name: prod
+  namespace: kargo-demo
+spec:
+  requestedFreight:
+  - origin:
+      kind: Warehouse
+      name: kargo-demo
+    sources:
+      stages:
+      - uat
+  promotionMechanisms:
+    gitRepoUpdates:
+    - repoURL: ${GITOPS_REPO_URL}
+      writeBranch: stage/prod
+      kustomize:
+        images:
+        - image: docker.io/okrehel/minirepo
+          path: stages/prod
+    argoCDAppUpdates:
+    - appName: kargo-demo-prod
+      appNamespace: argocd
