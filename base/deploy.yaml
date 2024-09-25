@@ -15,3 +15,5 @@ spec:
       containers:
       - name: minirepo
         image: docker.io/okrehel/minirepo
+      imagePullSecrets:
+        - name: regcred
