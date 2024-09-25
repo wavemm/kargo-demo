@@ -13,8 +13,8 @@ spec:
         app: kargo-demo
     spec:
       containers:
-      - name: nginx 
-        image: public.ecr.aws/nginx/nginx:placeholder
+      - name: minirepo
+        image: docker.io/okrehel/minirepo
         volumeMounts:
         - name: content
           mountPath: /usr/share/nginx/html
