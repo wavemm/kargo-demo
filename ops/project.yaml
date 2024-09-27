@@ -53,6 +53,9 @@ spec:
       name: kargo-demo
     sources:
       direct: true
+  verification:
+    analysisTemplates:
+      - name: kargo-demo-sleep-20
   promotionMechanisms:
     gitRepoUpdates:
     - repoURL: ${GITOPS_REPO_URL}
