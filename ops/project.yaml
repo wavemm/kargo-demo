@@ -81,6 +81,9 @@ spec:
     sources:
       stages:
       - test
+  verification:
+    analysisTemplates:
+      - name: kargo-demo-sleep-20
   promotionMechanisms:
     gitRepoUpdates:
     - repoURL: ${GITOPS_REPO_URL}
@@ -106,6 +109,9 @@ spec:
     sources:
       stages:
       - uat
+  verification:
+    analysisTemplates:
+      - name: kargo-demo-sleep-20
   promotionMechanisms:
     gitRepoUpdates:
     - repoURL: ${GITOPS_REPO_URL}

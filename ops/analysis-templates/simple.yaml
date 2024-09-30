@@ -16,8 +16,6 @@ spec:
             spec:
               containers:
               - name: test
-                image: alpine:latest
-                command:
-                - sleep
-                - "20"
+                image: python:3.11.5-slim-bookworm
+                command: [python, -c, "import sys; import time; time.sleep(100); sys.exit(1)"]
               restartPolicy: Never
