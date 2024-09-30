@@ -46,6 +46,8 @@ kind: Stage
 metadata:
   name: migrate
   namespace: kargo-demo
+  annotations:
+    kargo.akuity.io/color: green
 spec:
   requestedFreight:
   - origin:
@@ -73,6 +75,8 @@ kind: Stage
 metadata:
   name: canary
   namespace: kargo-demo
+  annotations:
+    kargo.akuity.io/color: blue
 spec:
   requestedFreight:
   - origin:
