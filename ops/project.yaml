@@ -65,7 +65,7 @@ spec:
         - image: docker.io/okrehel/minirepo
           path: stages/migrate
     argoCDAppUpdates:
-    - appName: kargo-demo-test
+    - appName: kargo-demo-migrate
       appNamespace: argocd
 ---
 apiVersion: kargo.akuity.io/v1alpha1
