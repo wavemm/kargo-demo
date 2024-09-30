@@ -8,7 +8,7 @@ spec:
   - list:
       elements:
       - stage: migrate
-      - stage: kanary
+      - stage: canary
       - stage: prod
   template:
     metadata:
