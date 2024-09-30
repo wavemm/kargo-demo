@@ -1,0 +1,21 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: AnalysisTemplate
+metadata:
+  name: kargo-demo-sleep-20
+  namespace: kargo-demo
+spec:
+  metrics:
+  - name: test
+    provider:
+      job:
+        metadata:
+        spec:
+          backoffLimit: 1
+          template:
+            spec:
+              containers:
+              - name: test
+                image: python:3.11.5-slim-bookworm
+                command: [python, -c, "import sys; import time; time.sleep(100); sys.exit(1)"]
+              restartPolicy: Never

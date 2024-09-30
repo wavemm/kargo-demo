@@ -1,0 +1,125 @@
+apiVersion: kargo.akuity.io/v1alpha1
+kind: Project
+metadata:
+  name: kargo-demo
+---
+apiVersion: v1
+kind: Secret
+type: Opaque
+metadata:
+  name: kargo-demo-repo
+  namespace: kargo-demo
+  labels:
+    kargo.akuity.io/cred-type: git
+stringData:
+  repoURL: ${GITOPS_REPO_URL}
+  username: ${GITHUB_USERNAME}
+  password: ${GITHUB_PAT}
+---
+apiVersion: v1
+kind: Secret
+type: Opaque
+metadata:
+  name: image-registry
+  namespace: kargo-demo
+  labels:
+    kargo.akuity.io/cred-type: image
+stringData:
+  repoURL: docker.io/okrehel/minirepo
+  username: ${DOCKER_USERNAME}
+  password: ${DOCKER_PASSWORD}
+---
+apiVersion: kargo.akuity.io/v1alpha1
+kind: Warehouse
+metadata:
+  name: kargo-demo
+  namespace: kargo-demo
+spec:
+  subscriptions:
+  - image:
+      repoURL: docker.io/okrehel/minirepo
+      updateStrategy: Latest
+      discoveryLimit: 5
+---
+apiVersion: kargo.akuity.io/v1alpha1
+kind: Stage
+metadata:
+  name: migrate
+  namespace: kargo-demo
+spec:
+  requestedFreight:
+  - origin:
+      kind: Warehouse
+      name: kargo-demo
+    sources:
+      direct: true
+  verification:
+    analysisTemplates:
+      - name: kargo-demo-sleep-20
+  promotionMechanisms:
+    gitRepoUpdates:
+    - repoURL: ${GITOPS_REPO_URL}
+      writeBranch: stage/migrate
+      kustomize:
+        images:
+        - image: docker.io/okrehel/minirepo
+          path: stages/migrate
+    argoCDAppUpdates:
+    - appName: kargo-demo-test
+      appNamespace: argocd
+---
+apiVersion: kargo.akuity.io/v1alpha1
+kind: Stage
+metadata:
+  name: canary
+  namespace: kargo-demo
+spec:
+  requestedFreight:
+  - origin:
+      kind: Warehouse
+      name: kargo-demo
+    sources:
+      stages:
+      - migrate
+  verification:
+    analysisTemplates:
+      - name: kargo-demo-sleep-20
+  promotionMechanisms:
+    gitRepoUpdates:
+    - repoURL: ${GITOPS_REPO_URL}
+      writeBranch: stage/canary
+      kustomize:
+        images:
+        - image: docker.io/okrehel/minirepo
+          path: stages/canary
+    argoCDAppUpdates:
+    - appName: kargo-demo-canary
+      appNamespace: argocd
+---
+apiVersion: kargo.akuity.io/v1alpha1
+kind: Stage
+metadata:
+  name: prod
+  namespace: kargo-demo
+spec:
+  requestedFreight:
+  - origin:
+      kind: Warehouse
+      name: kargo-demo
+    sources:
+      stages:
+      - canary
+  verification:
+    analysisTemplates:
+      - name: kargo-demo-sleep-20
+  promotionMechanisms:
+    gitRepoUpdates:
+    - repoURL: ${GITOPS_REPO_URL}
+      writeBranch: stage/prod
+      kustomize:
+        images:
+        - image: docker.io/okrehel/minirepo
+          path: stages/prod
+    argoCDAppUpdates:
+    - appName: kargo-demo-prod
+      appNamespace: argocd
