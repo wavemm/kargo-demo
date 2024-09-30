@@ -16,7 +16,7 @@ def kargo_create_project(recipe):
         "kargo login https://localhost:31444 --admin --password admin --insecure-skip-tls-verify",
         "envsubst < project.yaml | kargo apply -f -",
         kubectl(
-            "-n kargo-demo-test create secret generic regcred  --from-file=.dockerconfigjson=$HOME/.docker/config.json --type=kubernetes.io/dockerconfigjson"
+            "-n kargo-demo create secret generic regcred  --from-file=.dockerconfigjson=$HOME/.docker/config.json --type=kubernetes.io/dockerconfigjson"
         )
     ]
 

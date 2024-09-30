@@ -7,8 +7,8 @@ spec:
   generators:
   - list:
       elements:
-      - stage: test
-      - stage: uat
+      - stage: migrate
+      - stage: canary
       - stage: prod
   template:
     metadata:

@@ -44,7 +44,7 @@ spec:
 apiVersion: kargo.akuity.io/v1alpha1
 kind: Stage
 metadata:
-  name: test
+  name: migrate
   namespace: kargo-demo
 spec:
   requestedFreight:
@@ -59,19 +59,19 @@ spec:
   promotionMechanisms:
     gitRepoUpdates:
     - repoURL: ${GITOPS_REPO_URL}
-      writeBranch: stage/test
+      writeBranch: stage/migrate
       kustomize:
         images:
         - image: docker.io/okrehel/minirepo
-          path: stages/test
+          path: stages/migrate
     argoCDAppUpdates:
-    - appName: kargo-demo-test
+    - appName: kargo-demo-migrate
       appNamespace: argocd
 ---
 apiVersion: kargo.akuity.io/v1alpha1
 kind: Stage
 metadata:
-  name: uat
+  name: canary
   namespace: kargo-demo
 spec:
   requestedFreight:
@@ -80,20 +80,20 @@ spec:
       name: kargo-demo
     sources:
       stages:
-      - test
+      - migrate
   verification:
     analysisTemplates:
       - name: kargo-demo-sleep-20
   promotionMechanisms:
     gitRepoUpdates:
     - repoURL: ${GITOPS_REPO_URL}
-      writeBranch: stage/uat
+      writeBranch: stage/canary
       kustomize:
         images:
         - image: docker.io/okrehel/minirepo
-          path: stages/uat
+          path: stages/canary
     argoCDAppUpdates:
-    - appName: kargo-demo-uat
+    - appName: kargo-demo-canary
       appNamespace: argocd
 ---
 apiVersion: kargo.akuity.io/v1alpha1
@@ -108,7 +108,7 @@ spec:
       name: kargo-demo
     sources:
       stages:
-      - uat
+      - canary
   verification:
     analysisTemplates:
       - name: kargo-demo-sleep-20
