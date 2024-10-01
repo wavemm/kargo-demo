@@ -14,4 +14,4 @@ patches:
     name: kargo-demo
 images:
 - name: docker.io/okrehel/minirepo
-  newTag: 2410.1.4
+  newTag: 2410.1.3
