@@ -17,5 +17,5 @@ spec:
               containers:
               - name: test
                 image: curlimages/curl:latest
-                command: [curl, --help]
+                command: [curl, "kargo-demo:3000/migrate"]
               restartPolicy: Never
