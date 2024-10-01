@@ -17,5 +17,5 @@ spec:
               containers:
               - name: test
                 image: curlimages/curl:latest
-                command: [curl, "localhost:30081/migrate"]
+                command: [curl, --help]
               restartPolicy: Never
