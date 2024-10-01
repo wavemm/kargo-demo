@@ -15,15 +15,18 @@ def kargo_create_project(recipe):
         "cd ops",
         "kargo login https://localhost:31444 --admin --password admin --insecure-skip-tls-verify",
         "envsubst < project.yaml | kargo apply -f -",
-        kubectl(
-            "-n kargo-demo-migrate create secret generic regcred  --from-file=.dockerconfigjson=$HOME/.docker/config.json --type=kubernetes.io/dockerconfigjson"
-        )
+
     ]
+
+def create_regcred(recipe):
+    return kubectl(
+        "-n kargo-demo-migrate create secret generic regcred  --from-file=.dockerconfigjson=$HOME/.docker/config.json --type=kubernetes.io/dockerconfigjson"
+    )
 
 
 def setup(recipe):
     return [
-        "# kind delete cluster -n kargo-quickstart",
+        "kind delete cluster -n kargo-quickstart",
         "cd ops",
         "./setup-kind-cluster.sh",
         kubectl("apply -f argocd-kargo-demo.yaml"),
