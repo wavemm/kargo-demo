@@ -17,5 +17,5 @@ spec:
               containers:
               - name: test
                 image: curlimages/curl:latest
-                command: [curl, "kargo-demo:3000/migrate"]
+                command: [curl, "kargo-demo.kargo-demo-migrate.svc.cluster.local:3000/migrate"]
               restartPolicy: Never
