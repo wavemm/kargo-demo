@@ -62,7 +62,7 @@ def get_analysisruns(recipe):
 
 
 def get_last_analysisrun(recipe):
-    return kubectl("get analysisrun --all-namespaces --sort-by=.metadata.creationTimestamp -o jsonpath=\"{.items[0]}\" | jq")
+    return kubectl("get analysisrun --all-namespaces --sort-by=.metadata.creationTimestamp -o jsonpath=\"{.items[-1]}\" | jq")
 
 
 def get_last_migrate_logs(recipe, name="7273edf0-eef2-4b21-bb7c-6847e0a37444.test.1-7kq5k"):
